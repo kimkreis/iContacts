@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.Vector;
 
 /**
- * Mapper-Klasse, die <code>Kontakt</code>-Objekte auf eine relationale
+ * Mapper-Klasse, die <code>KKL</code>-Objekte auf eine relationale
  * Datenbank abbildet. Hierzu wird eine Reihe von Methoden zur Verfügung
  * gestellt, mit deren Hilfe z.B. Objekte gesucht, erzeugt, modifiziert und
  * gelöscht werden können. Das Mapping ist bidirektional. D.h., Objekte können
@@ -16,10 +16,10 @@ import java.util.Vector;
  * @see CustomerMapper, TransactionMapper
  * @author Thies
  */
-public class KontaktMapper {
+public class KKLMapper {
 
   /**
-   * Die Klasse KontaktMapper wird nur einmal instantiiert. Man spricht hierbei
+   * Die Klasse KKLMapper wird nur einmal instantiiert. Man spricht hierbei
    * von einem sogenannten <b>Singleton</b>.
    * <p>
    * Diese Variable ist durch den Bezeichner <code>static</code> nur einmal für
@@ -28,31 +28,31 @@ public class KontaktMapper {
    * 
    * @see accountMapper()
    */
-  private static KontaktMapper accountMapper = null;
+  private static KKLMapper accountMapper = null;
 
   /**
    * Geschützter Konstruktor - verhindert die Möglichkeit, mit <code>new</code>
    * neue Instanzen dieser Klasse zu erzeugen.
    */
-  protected KontaktMapper() {
+  protected KKLMapper() {
   }
 
   /**
    * Diese statische Methode kann aufgrufen werden durch
-   * <code>KontaktMapper.accountMapper()</code>. Sie stellt die
+   * <code>KKLMapper.accountMapper()</code>. Sie stellt die
    * Singleton-Eigenschaft sicher, indem Sie dafür sorgt, dass nur eine einzige
-   * Instanz von <code>KontaktMapper</code> existiert.
+   * Instanz von <code>KKLMapper</code> existiert.
    * <p>
    * 
-   * <b>Fazit:</b> KontaktMapper sollte nicht mittels <code>new</code>
+   * <b>Fazit:</b> KKLMapper sollte nicht mittels <code>new</code>
    * instantiiert werden, sondern stets durch Aufruf dieser statischen Methode.
    * 
-   * @return DAS <code>KontaktMapper</code>-Objekt.
+   * @return DAS <code>KKLMapper</code>-Objekt.
    * @see accountMapper
    */
-  public static KontaktMapper userMapper() {
+  public static KKLMapper userMapper() {
     if (accountMapper == null) {
-      accountMapper = new KontaktMapper();
+      accountMapper = new KKLMapper();
     }
 
     return accountMapper;
@@ -66,7 +66,7 @@ public class KontaktMapper {
    * @return Konto-Objekt, das dem übergebenen Schlüssel entspricht, null bei
    *         nicht vorhandenem DB-Tupel.
    */
-  public Kontakt findByKey(int id) {
+  public KKL findByKey(int id) {
     // DB-Verbindung holen
     Connection con = DBConnection.connection();
 
@@ -84,7 +84,7 @@ public class KontaktMapper {
        */
       if (rs.next()) {
         // Ergebnis-Tupel in Objekt umwandeln
-        Kontakt a = new Kontakt();
+        KKL a = new KKL();
         a.setId(rs.getInt("id"));
         a.setOwnerID(rs.getInt("owner"));
         return a;
@@ -101,15 +101,15 @@ public class KontaktMapper {
   /**
    * Auslesen aller Konten.
    * 
-   * @return Ein Vektor mit Kontakt-Objekten, die sämtliche Konten
+   * @return Ein Vektor mit KKL-Objekten, die sämtliche Konten
    *         repräsentieren. Bei evtl. Exceptions wird ein partiell gefüllter
    *         oder ggf. auch leerer Vetor zurückgeliefert.
    */
-  public Vector<Kontakt> findAll() {
+  public Vector<KKL> findAll() {
     Connection con = DBConnection.connection();
 
     // Ergebnisvektor vorbereiten
-    Vector<Kontakt> result = new Vector<Kontakt>();
+    Vector<KKL> result = new Vector<KKL>();
 
     try {
       Statement stmt = con.createStatement();
@@ -117,9 +117,9 @@ public class KontaktMapper {
       ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
           + " ORDER BY id");
 
-      // Für jeden Eintrag im Suchergebnis wird nun ein Kontakt-Objekt erstellt.
+      // Für jeden Eintrag im Suchergebnis wird nun ein KKL-Objekt erstellt.
       while (rs.next()) {
-        Kontakt a = new Kontakt();
+        KKL a = new KKL();
         a.setId(rs.getInt("id"));
         a.setOwnerID(rs.getInt("owner"));
 
@@ -141,13 +141,13 @@ public class KontaktMapper {
    * 
    * @see findByOwner(Customer owner)
    * @param ownerID Schlüssel des zugehörigen Kunden.
-   * @return Ein Vektor mit Kontakt-Objekten, die sämtliche Konten des
+   * @return Ein Vektor mit KKL-Objekten, die sämtliche Konten des
    *         betreffenden Kunden repräsentieren. Bei evtl. Exceptions wird ein
    *         partiell gefüllter oder ggf. auch leerer Vetor zurückgeliefert.
    */
-  public Vector<Kontakt> findByOwner(int ownerID) {
+  public Vector<KKL> findByOwner(int ownerID) {
     Connection con = DBConnection.connection();
-    Vector<Kontakt> result = new Vector<Kontakt>();
+    Vector<KKL> result = new Vector<KKL>();
 
     try {
       Statement stmt = con.createStatement();
@@ -155,9 +155,9 @@ public class KontaktMapper {
       ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
           + "WHERE owner=" + ownerID + " ORDER BY id");
 
-      // Für jeden Eintrag im Suchergebnis wird nun ein Kontakt-Objekt erstellt.
+      // Für jeden Eintrag im Suchergebnis wird nun ein KKL-Objekt erstellt.
       while (rs.next()) {
-        Kontakt a = new Kontakt();
+        KKL a = new KKL();
         a.setId(rs.getInt("id"));
         a.setOwnerID(rs.getInt("owner"));
 
@@ -181,7 +181,7 @@ public class KontaktMapper {
    * @param owner Kundenobjekt, dessen Konten wir auslesen möchten.
    * @return alle Konten des Kunden
    */
-  public Vector<Kontakt> findByOwner(Customer owner) {
+  public Vector<KKL> findByOwner(Customer owner) {
 
     /*
      * Wir lesen einfach die Kundennummer (Primärschlüssel) des Customer-Objekts
@@ -191,7 +191,7 @@ public class KontaktMapper {
   }
 
   /**
-   * Einfügen eines <code>Kontakt</code>-Objekts in die Datenbank. Dabei wird
+   * Einfügen eines <code>KKL</code>-Objekts in die Datenbank. Dabei wird
    * auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
    * berichtigt.
    * 
@@ -199,7 +199,7 @@ public class KontaktMapper {
    * @return das bereits übergebene Objekt, jedoch mit ggf. korrigierter
    *         <code>id</code>.
    */
-  public Kontakt insert(Kontakt a) {
+  public KKL insert(KKL a) {
     Connection con = DBConnection.connection();
 
     try {
@@ -232,10 +232,10 @@ public class KontaktMapper {
     }
 
     /*
-     * Rückgabe, des evtl. korrigierten Kontakts.
+     * Rückgabe, des evtl. korrigierten KKLs.
      * 
      * HINWEIS: Da in Java nur Referenzen auf Objekte und keine physischen
-     * Objekte übergeben werden, wäre die Anpassung des Kontakt-Objekts auch
+     * Objekte übergeben werden, wäre die Anpassung des KKL-Objekts auch
      * ohne diese explizite Rückgabe au�erhalb dieser Methode sichtbar. Die
      * explizite Rückgabe von a ist eher ein Stilmittel, um zu signalisieren,
      * dass sich das Objekt evtl. im Laufe der Methode verändert hat.
@@ -249,7 +249,7 @@ public class KontaktMapper {
    * @param a das Objekt, das in die DB geschrieben werden soll
    * @return das als Parameter übergebene Objekt
    */
-  public Kontakt update(Kontakt a) {
+  public KKL update(KKL a) {
     Connection con = DBConnection.connection();
 
     try {
@@ -263,16 +263,16 @@ public class KontaktMapper {
       e2.printStackTrace();
     }
 
-    // Um Analogie zu insert(Kontakt a) zu wahren, geben wir a zurück
+    // Um Analogie zu insert(KKL a) zu wahren, geben wir a zurück
     return a;
   }
 
   /**
-   * Löschen der Daten eines <code>Kontakt</code>-Objekts aus der Datenbank.
+   * Löschen der Daten eines <code>KKL</code>-Objekts aus der Datenbank.
    * 
    * @param a das aus der DB zu löschende "Objekt"
    */
-  public void delete(Kontakt a) {
+  public void delete(KKL a) {
     Connection con = DBConnection.connection();
 
     try {
@@ -287,13 +287,13 @@ public class KontaktMapper {
   }
 
   /**
-   * Löschen sämtlicher Konten (<code>Kontakt</code>-Objekte) eines Kunden.
+   * Löschen sämtlicher Konten (<code>KKL</code>-Objekte) eines Kunden.
    * Diese Methode sollte aufgerufen werden, bevor ein <code>Customer</code>
    * -Objekt gelöscht wird.
    * 
    * @param c das <code>Customer</code>-Objekt, zu dem die Konten gehören
    */
-  public void deleteKontaktsOf(Customer c) {
+  public void deleteKKLsOf(Customer c) {
     Connection con = DBConnection.connection();
 
     try {
@@ -314,7 +314,7 @@ public class KontaktMapper {
    * @param a das Konto, dessen Inhaber wir auslesen möchten
    * @return ein Objekt, das den Eigentümer des Kontos darstellt
    */
-  public Customer getOwner(Kontakt a) {
+  public Customer getOwner(KKL a) {
     /*
      * Wir bedienen uns hier einfach des CustomerMapper. Diesem geben wir
      * einfach den in dem s-Objekt enthaltenen Fremdschlüssel für den
@@ -325,4 +325,5 @@ public class KontaktMapper {
   }
 
 }
+
 
