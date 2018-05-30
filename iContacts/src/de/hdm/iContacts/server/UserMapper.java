@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
+import de.hdm.iContacts.shared.bo.User;
+
 /**
  * Mapper-Klasse, die <code>User</code>-Objekte auf eine relationale
  * Datenbank abbildet. Hierzu wird eine Reihe von Methoden zur Verfügung
@@ -28,7 +30,7 @@ public class UserMapper {
    * 
    * @see accountMapper()
    */
-  private static UserMapper accountMapper = null;
+  private static UserMapper userMapper = null;
 
   /**
    * Geschützter Konstruktor - verhindert die Möglichkeit, mit <code>new</code>
@@ -51,11 +53,11 @@ public class UserMapper {
    * @see accountMapper
    */
   public static UserMapper userMapper() {
-    if (accountMapper == null) {
-      accountMapper = new UserMapper();
+    if (userMapper == null) {
+      userMapper = new UserMapper();
     }
 
-    return accountMapper;
+    return userMapper;
   }
 
   /**
@@ -66,32 +68,35 @@ public class UserMapper {
    * @return Konto-Objekt, das dem übergebenen Schlüssel entspricht, null bei
    *         nicht vorhandenem DB-Tupel.
    */
-  public User findByKey(int id) {
+  public User findByKey(int id) { //importieren aus shared, da user klasse exisier- "suchen", abfrage
     // DB-Verbindung holen
-    Connection con = DBConnection.connection();
+    Connection con = DBConnection.connection(); // db verbindung holen, holt verbindung für mapper
 
     try {
       // Leeres SQL-Statement (JDBC) anlegen
-      Statement stmt = con.createStatement();
+      Statement stmt = con.createStatement(); //abfrage generieren vom typ statement, objekt, benötigt man um statement zur db zu schicken
 
       // Statement ausfüllen und als Query an die DB schicken
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
-          + "WHERE id=" + id + " ORDER BY owner");
+      ResultSet rs = stmt.executeQuery("SELECT * FROM T_USER WHERE id=" + id);  //wird an db geschickt mit stm, ergebnis ist im resultset gespeichert, abfrage durchführen, immer in "
+         //plus ist für die verknüpfung von id mit string (blau), rechte id ist id von findbykey
 
       /*
        * Da id Primärschlüssel ist, kann max. nur ein Tupel zurückgegeben
        * werden. Prüfe, ob ein Ergebnis vorliegt.
        */
-      if (rs.next()) {
+      if (rs.next()) { //.next, erste zeile von resultset
         // Ergebnis-Tupel in Objekt umwandeln
         User a = new User();
         a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
+        a.setVorname(rs.getString("vorname"));
+        a.setNachname(rs.getString("nachname"));
+        a.setEMail(rs.getString("eMail"));
         return a;
+        
       }
     }
-    catch (SQLException e2) {
-      e2.printStackTrace();
+    catch (SQLException e2) { //fehlerbehandlung zb. verbindung zum server nicht möglich, ein Muss
+      e2.printStackTrace(); //fehlermdelung wird auf console ausgegeben
       return null;
     }
 
@@ -105,26 +110,28 @@ public class UserMapper {
    *         repräsentieren. Bei evtl. Exceptions wird ein partiell gefüllter
    *         oder ggf. auch leerer Vetor zurückgeliefert.
    */
-  public Vector<User> findAll() {
-    Connection con = DBConnection.connection();
+  public Vector<User> findAll() { // alle datensätze rausziehen aus tabelle user
+    Connection con = DBConnection.connection(); //wieder auf db verbindung zugreifen, in jeder methode neu
 
     // Ergebnisvektor vorbereiten
-    Vector<User> result = new Vector<User>();
+    Vector<User> result = new Vector<User>(); //leerer vektor
 
     try {
       Statement stmt = con.createStatement();
 
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
-          + " ORDER BY id");
-
+      ResultSet rs = stmt.executeQuery("SELECT * FROM T_USER ORDER BY id"); //kein where notwendig
+    		  
       // Für jeden Eintrag im Suchergebnis wird nun ein User-Objekt erstellt.
-      while (rs.next()) {
+      while (rs.next()) { //schleife läuft durch, bis es keinen datensatz mehr gibt, gegenteil zu if
         User a = new User();
         a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
+        a.setVorname(rs.getString("vorname"));
+        a.setNachname(rs.getString("nachname"));
+        a.setEMail(rs.getString("eMail"));
+        
 
-        // Hinzufügen des neuen Objekts zum Ergebnisvektor
-        result.addElement(a);
+        // Hinzufügen des neuen Objekts zum Ergebnisvektor, da mehrere objekte, nicht nur eins wie bei findbykey
+        result.addElement(a); //vektor wird mit den erzeugten user-okjekten gefüllt
       }
     }
     catch (SQLException e2) {
@@ -145,49 +152,15 @@ public class UserMapper {
    *         betreffenden Kunden repräsentieren. Bei evtl. Exceptions wird ein
    *         partiell gefüllter oder ggf. auch leerer Vetor zurückgeliefert.
    */
-  public Vector<User> findByOwner(int ownerID) {
-    Connection con = DBConnection.connection();
-    Vector<User> result = new Vector<User>();
-
-    try {
-      Statement stmt = con.createStatement();
-
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
-          + "WHERE owner=" + ownerID + " ORDER BY id");
-
-      // Für jeden Eintrag im Suchergebnis wird nun ein User-Objekt erstellt.
-      while (rs.next()) {
-        User a = new User();
-        a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
-
-        // Hinzufügen des neuen Objekts zum Ergebnisvektor
-        result.addElement(a);
-      }
-    }
-    catch (SQLException e2) {
-      e2.printStackTrace();
-    }
-
-    // Ergebnisvektor zurückgeben
-    return result;
-  }
-
-  /**
-   * Auslesen aller Konten eines Kunden (durch <code>Customer</code>-Objekt
-   * gegeben).
-   * 
-   * @see findByOwner(int ownerID)
-   * @param owner Kundenobjekt, dessen Konten wir auslesen möchten.
-   * @return alle Konten des Kunden
-   */
-  public Vector<User> findByOwner(Customer owner) {
+ 
+   
+  public User findBy (User user) {
 
     /*
      * Wir lesen einfach die Kundennummer (Primärschlüssel) des Customer-Objekts
      * aus und delegieren die weitere Bearbeitung an findByOwner(int ownerID).
      */
-    return findByOwner(owner.getId());
+    return findByKey(user.getId());
   }
 
   /**
@@ -209,8 +182,8 @@ public class UserMapper {
        * Zunächst schauen wir nach, welches der momentan höchste
        * Primärschlüsselwert ist.
        */
-      ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid "
-          + "FROM accounts ");
+      ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid " //zeige die größte id in meiner db
+          + "FROM T_USER ");
 
       // Wenn wir etwas zurückerhalten, kann dies nur einzeilig sein
       if (rs.next()) {
@@ -218,13 +191,13 @@ public class UserMapper {
          * a erhält den bisher maximalen, nun um 1 inkrementierten
          * Primärschlüssel.
          */
-        a.setId(rs.getInt("maxid") + 1);
+        a.setId(rs.getInt("maxid") + 1); // wenn zb höchste id3, 3 plus 1= 4
 
         stmt = con.createStatement();
 
         // Jetzt erst erfolgt die tatsächliche Einfügeoperation
-        stmt.executeUpdate("INSERT INTO accounts (id, owner) " + "VALUES ("
-            + a.getId() + "," + a.getOwnerID() + ")");
+        stmt.executeUpdate("INSERT INTO T_USER (id, vorname, nachname, eMail) " + "VALUES ("
+            + a.getId() + ",'" + a.getVorname() + "','" + a.getNachname() + "','" + a.getEMail() +"')"); //+ klammer im string am ende, strings in anführungszeichen
       }
     }
     catch (SQLException e2) {
@@ -255,10 +228,10 @@ public class UserMapper {
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("UPDATE accounts " + "SET owner=\"" + a.getOwnerID()
-          + "\" " + "WHERE id=" + a.getId());
-
+      stmt.executeUpdate("UPDATE T_USER SET vorname= '"  + a.getVorname() + "', nachname = '" + a.getNachname() +"', eMail = '" + a.getEMail() + "' WHERE = " + a.getId());
     }
+    // executeQuery für lesen, abfragen
+    // executeUpdat für Ändern (delete auch)
     catch (SQLException e2) {
       e2.printStackTrace();
     }
@@ -278,7 +251,7 @@ public class UserMapper {
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("DELETE FROM accounts " + "WHERE id=" + a.getId());
+      stmt.executeUpdate("DELETE FROM T_USER " + "WHERE id=" + a.getId()); // nur eine angabe, da es die ganze zeile löscht
 
     }
     catch (SQLException e2) {
@@ -293,36 +266,6 @@ public class UserMapper {
    * 
    * @param c das <code>Customer</code>-Objekt, zu dem die Konten gehören
    */
-  public void deleteUsersOf(Customer c) {
-    Connection con = DBConnection.connection();
-
-    try {
-      Statement stmt = con.createStatement();
-
-      stmt.executeUpdate("DELETE FROM accounts " + "WHERE owner=" + c.getId());
-
-    }
-    catch (SQLException e2) {
-      e2.printStackTrace();
-    }
-  }
-
-  /**
-   * Auslesen des zugehörigen <code>Customer</code>-Objekts zu einem gegebenen
-   * Konto.
-   * 
-   * @param a das Konto, dessen Inhaber wir auslesen möchten
-   * @return ein Objekt, das den Eigentümer des Kontos darstellt
-   */
-  public Customer getOwner(User a) {
-    /*
-     * Wir bedienen uns hier einfach des CustomerMapper. Diesem geben wir
-     * einfach den in dem s-Objekt enthaltenen Fremdschlüssel für den
-     * Kontoinhaber. Der CustomerMapper lässt uns dann diese ID in ein Objekt
-     * auf.
-     */
-    return CustomerMapper.customerMapper().findByKey(a.getOwnerID());
-  }
-
+  
 }
 
