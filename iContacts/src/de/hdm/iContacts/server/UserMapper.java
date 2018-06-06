@@ -71,34 +71,35 @@ public class UserMapper {
   public User findByKey(int id) { //importieren aus shared, da user klasse exisier- "suchen", abfrage
     // DB-Verbindung holen
     Connection con = DBConnection.connection(); // db verbindung holen, holt verbindung für mapper
-
     try {
-      // Leeres SQL-Statement (JDBC) anlegen
-      Statement stmt = con.createStatement(); //abfrage generieren vom typ statement, objekt, benötigt man um statement zur db zu schicken
+        // Leeres SQL-Statement (JDBC) anlegen
+        Statement stmt = con.createStatement(); //abfrage generieren vom typ statement, objekt, benötigt man um statement zur db zu schicken
 
-      // Statement ausfüllen und als Query an die DB schicken
-      ResultSet rs = stmt.executeQuery("SELECT * FROM T_USER WHERE id=" + id);  //wird an db geschickt mit stm, ergebnis ist im resultset gespeichert, abfrage durchführen, immer in "
-         //plus ist für die verknüpfung von id mit string (blau), rechte id ist id von findbykey
+        // Statement ausfüllen und als Query an die DB schicken
 
-      /*
-       * Da id Primärschlüssel ist, kann max. nur ein Tupel zurückgegeben
-       * werden. Prüfe, ob ein Ergebnis vorliegt.
-       */
-      if (rs.next()) { //.next, erste zeile von resultset
-        // Ergebnis-Tupel in Objekt umwandeln
-        User a = new User();
-        a.setId(rs.getInt("id"));
-        a.setVorname(rs.getString("vorname"));
-        a.setNachname(rs.getString("nachname"));
-        a.setEMail(rs.getString("eMail"));
-        return a;
-        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM T_USER WHERE id=" + id);  //wird an db geschickt mit stm, ergebnis ist im resultset gespeichert, abfrage durchführen, immer in "
+           //plus ist für die verknüpfung von id mit string (blau), rechte id ist id von findbykey
+
+        /*
+         * Da id Primärschlüssel ist, kann max. nur ein Tupel zurückgegeben
+         * werden. Prüfe, ob ein Ergebnis vorliegt.
+         */
+        if (rs.next()) { //.next, erste zeile von resultset
+          // Ergebnis-Tupel in Objekt umwandeln
+          User a = new User();
+          a.setId(rs.getInt("id"));
+          a.setVorname(rs.getString("vorname"));
+          a.setNachname(rs.getString("nachname"));
+          a.setEMail(rs.getString("eMail"));
+         
+          return a;
+          
+        }
       }
-    }
-    catch (SQLException e2) { //fehlerbehandlung zb. verbindung zum server nicht möglich, ein Muss
-      e2.printStackTrace(); //fehlermdelung wird auf console ausgegeben
-      return null;
-    }
+      catch (SQLException e) { //fehlerbehandlung zb. verbindung zum server nicht möglich, ein Muss
+    	  e.printStackTrace(); //fehlermdelung wird auf console ausgegeben
+        return null;
+      }
 
     return null;
   }

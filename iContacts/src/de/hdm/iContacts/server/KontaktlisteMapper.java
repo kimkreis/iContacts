@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
+import de.hdm.iContacts.shared.bo.Kontaktliste;
+import de.hdm.iContacts.shared.bo.User;
+
 /**
  * Mapper-Klasse, die <code>Kontaktliste</code>-Objekte auf eine relationale
  * Datenbank abbildet. Hierzu wird eine Reihe von Methoden zur Verfügung
@@ -26,9 +29,9 @@ public class KontaktlisteMapper {
    * sämtliche eventuellen Instanzen dieser Klasse vorhanden. Sie speichert die
    * einzige Instanz dieser Klasse.
    * 
-   * @see accountMapper()
+   * @see kontaktlisteMapper()
    */
-  private static KontaktlisteMapper accountMapper = null;
+  private static KontaktlisteMapper kontaktlisteMapper = null;
 
   /**
    * Geschützter Konstruktor - verhindert die Möglichkeit, mit <code>new</code>
@@ -39,7 +42,7 @@ public class KontaktlisteMapper {
 
   /**
    * Diese statische Methode kann aufgrufen werden durch
-   * <code>KontaktlisteMapper.accountMapper()</code>. Sie stellt die
+   * <code>KontaktlisteMapper.kontaktlisteMapper()</code>. Sie stellt die
    * Singleton-Eigenschaft sicher, indem Sie dafür sorgt, dass nur eine einzige
    * Instanz von <code>KontaktlisteMapper</code> existiert.
    * <p>
@@ -48,14 +51,14 @@ public class KontaktlisteMapper {
    * instantiiert werden, sondern stets durch Aufruf dieser statischen Methode.
    * 
    * @return DAS <code>KontaktlisteMapper</code>-Objekt.
-   * @see accountMapper
+   * @see kontaktlisteMapper
    */
-  public static KontaktlisteMapper userMapper() {
-    if (accountMapper == null) {
-      accountMapper = new KontaktlisteMapper();
+  public static KontaktlisteMapper kontaktlisteMapper() {
+    if (kontaktlisteMapper == null) {
+      kontaktlisteMapper = new KontaktlisteMapper();
     }
 
-    return accountMapper;
+    return kontaktlisteMapper;
   }
 
   /**
@@ -75,7 +78,7 @@ public class KontaktlisteMapper {
       Statement stmt = con.createStatement();
 
       // Statement ausfüllen und als Query an die DB schicken
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
+      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM T_KONTAKTLISTE "
           + "WHERE id=" + id + " ORDER BY owner");
 
       /*
@@ -86,7 +89,7 @@ public class KontaktlisteMapper {
         // Ergebnis-Tupel in Objekt umwandeln
         Kontaktliste a = new Kontaktliste();
         a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
+        a.setName(rs.getString("name"));
         return a;
       }
     }
@@ -114,14 +117,14 @@ public class KontaktlisteMapper {
     try {
       Statement stmt = con.createStatement();
 
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
+      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM T_KONTAKTLISTE "
           + " ORDER BY id");
 
       // Für jeden Eintrag im Suchergebnis wird nun ein Kontaktliste-Objekt erstellt.
       while (rs.next()) {
         Kontaktliste a = new Kontaktliste();
         a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
+        a.setName(rs.getString("name"));
 
         // Hinzufügen des neuen Objekts zum Ergebnisvektor
         result.addElement(a);
@@ -145,21 +148,21 @@ public class KontaktlisteMapper {
    *         betreffenden Kunden repräsentieren. Bei evtl. Exceptions wird ein
    *         partiell gefüllter oder ggf. auch leerer Vetor zurückgeliefert.
    */
-  public Vector<Kontaktliste> findByOwner(int ownerID) {
+  public Vector<Kontaktliste> findByUser(int id) {
     Connection con = DBConnection.connection();
     Vector<Kontaktliste> result = new Vector<Kontaktliste>();
 
     try {
       Statement stmt = con.createStatement();
 
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
-          + "WHERE owner=" + ownerID + " ORDER BY id");
+      ResultSet rs = stmt.executeQuery("SELECT id, name FROM T_KONTAKTLISTE "
+          + "WHERE id_user =" + id + " ORDER BY id");
 
       // Für jeden Eintrag im Suchergebnis wird nun ein Kontaktliste-Objekt erstellt.
       while (rs.next()) {
         Kontaktliste a = new Kontaktliste();
         a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
+        a.setName(rs.getString("name"));
 
         // Hinzufügen des neuen Objekts zum Ergebnisvektor
         result.addElement(a);
@@ -181,13 +184,13 @@ public class KontaktlisteMapper {
    * @param owner Kundenobjekt, dessen Konten wir auslesen möchten.
    * @return alle Konten des Kunden
    */
-  public Vector<Kontaktliste> findByOwner(Customer owner) {
+  public Vector<Kontaktliste> findByUser (User user) {
 
     /*
      * Wir lesen einfach die Kundennummer (Primärschlüssel) des Customer-Objekts
      * aus und delegieren die weitere Bearbeitung an findByOwner(int ownerID).
      */
-    return findByOwner(owner.getId());
+    return findByUser(user.getId());
   }
 
   /**
@@ -210,7 +213,7 @@ public class KontaktlisteMapper {
        * Primärschlüsselwert ist.
        */
       ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid "
-          + "FROM accounts ");
+          + "FROM T_KONTAKTLISTE ");
 
       // Wenn wir etwas zurückerhalten, kann dies nur einzeilig sein
       if (rs.next()) {
@@ -223,8 +226,8 @@ public class KontaktlisteMapper {
         stmt = con.createStatement();
 
         // Jetzt erst erfolgt die tatsächliche Einfügeoperation
-        stmt.executeUpdate("INSERT INTO accounts (id, owner) " + "VALUES ("
-            + a.getId() + "," + a.getOwnerID() + ")");
+        stmt.executeUpdate("INSERT INTO T_KONTAKTLISTE (id, name) " + "VALUES ("
+            + a.getId() + "," + a.getName() + ")");
       }
     }
     catch (SQLException e2) {
@@ -255,7 +258,7 @@ public class KontaktlisteMapper {
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("UPDATE accounts " + "SET owner=\"" + a.getOwnerID()
+      stmt.executeUpdate("UPDATE T_KONTAKTLISTE " + "SET name=\"" + a.getName()
           + "\" " + "WHERE id=" + a.getId());
 
     }
@@ -278,7 +281,7 @@ public class KontaktlisteMapper {
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("DELETE FROM accounts " + "WHERE id=" + a.getId());
+      stmt.executeUpdate("DELETE FROM T_KONTAKTLISTE " + "WHERE id=" + a.getId());
 
     }
     catch (SQLException e2) {
@@ -293,13 +296,13 @@ public class KontaktlisteMapper {
    * 
    * @param c das <code>Customer</code>-Objekt, zu dem die Konten gehören
    */
-  public void deleteKontaktlistesOf(Customer c) {
+  public void deleteKontaktlisteOf(User c) {
     Connection con = DBConnection.connection();
 
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("DELETE FROM accounts " + "WHERE owner=" + c.getId());
+      stmt.executeUpdate("DELETE FROM T_KONTAKTLISTE " + "WHERE user_id =" + c.getId());
 
     }
     catch (SQLException e2) {
@@ -314,14 +317,14 @@ public class KontaktlisteMapper {
    * @param a das Konto, dessen Inhaber wir auslesen möchten
    * @return ein Objekt, das den Eigentümer des Kontos darstellt
    */
-  public Customer getOwner(Kontaktliste a) {
+  public User getUser(Kontaktliste a) {
     /*
      * Wir bedienen uns hier einfach des CustomerMapper. Diesem geben wir
      * einfach den in dem s-Objekt enthaltenen Fremdschlüssel für den
      * Kontoinhaber. Der CustomerMapper lässt uns dann diese ID in ein Objekt
      * auf.
      */
-    return CustomerMapper.customerMapper().findByKey(a.getOwnerID());
+    return UserMapper.userMapper().findBy(a.getUser());
   }
 
 }

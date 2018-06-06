@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
+import de.hdm.iContacts.shared.bo.Kontakt;
+import de.hdm.iContacts.shared.bo.Kontaktliste;
+
 /**
  * Mapper-Klasse, die <code>KKL</code>-Objekte auf eine relationale
  * Datenbank abbildet. Hierzu wird eine Reihe von Methoden zur Verfügung
@@ -26,9 +29,9 @@ public class KKLMapper {
    * sämtliche eventuellen Instanzen dieser Klasse vorhanden. Sie speichert die
    * einzige Instanz dieser Klasse.
    * 
-   * @see accountMapper()
+   * @see kklMapper()
    */
-  private static KKLMapper accountMapper = null;
+  private static KKLMapper kklMapper = null;
 
   /**
    * Geschützter Konstruktor - verhindert die Möglichkeit, mit <code>new</code>
@@ -39,7 +42,7 @@ public class KKLMapper {
 
   /**
    * Diese statische Methode kann aufgrufen werden durch
-   * <code>KKLMapper.accountMapper()</code>. Sie stellt die
+   * <code>KKLMapper.kklMapper()</code>. Sie stellt die
    * Singleton-Eigenschaft sicher, indem Sie dafür sorgt, dass nur eine einzige
    * Instanz von <code>KKLMapper</code> existiert.
    * <p>
@@ -48,55 +51,17 @@ public class KKLMapper {
    * instantiiert werden, sondern stets durch Aufruf dieser statischen Methode.
    * 
    * @return DAS <code>KKLMapper</code>-Objekt.
-   * @see accountMapper
+   * @see kklMapper
    */
   public static KKLMapper userMapper() {
-    if (accountMapper == null) {
-      accountMapper = new KKLMapper();
+    if (kklMapper == null) {
+      kklMapper = new KKLMapper();
     }
 
-    return accountMapper;
+    return kklMapper;
   }
 
-  /**
-   * Suchen eines Kontos mit vorgegebener Kontonummer. Da diese eindeutig ist,
-   * wird genau ein Objekt zur�ckgegeben.
-   * 
-   * @param id Primärschlüsselattribut (->DB)
-   * @return Konto-Objekt, das dem übergebenen Schlüssel entspricht, null bei
-   *         nicht vorhandenem DB-Tupel.
-   */
-  public KKL findByKey(int id) {
-    // DB-Verbindung holen
-    Connection con = DBConnection.connection();
 
-    try {
-      // Leeres SQL-Statement (JDBC) anlegen
-      Statement stmt = con.createStatement();
-
-      // Statement ausfüllen und als Query an die DB schicken
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
-          + "WHERE id=" + id + " ORDER BY owner");
-
-      /*
-       * Da id Primärschlüssel ist, kann max. nur ein Tupel zurückgegeben
-       * werden. Prüfe, ob ein Ergebnis vorliegt.
-       */
-      if (rs.next()) {
-        // Ergebnis-Tupel in Objekt umwandeln
-        KKL a = new KKL();
-        a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
-        return a;
-      }
-    }
-    catch (SQLException e2) {
-      e2.printStackTrace();
-      return null;
-    }
-
-    return null;
-  }
 
   /**
    * Auslesen aller Konten.
@@ -105,16 +70,16 @@ public class KKLMapper {
    *         repräsentieren. Bei evtl. Exceptions wird ein partiell gefüllter
    *         oder ggf. auch leerer Vetor zurückgeliefert.
    */
-  public Vector<KKL> findAll() {
+  public Vector<Kontakt> findAllKontakteOf(Kontaktliste k) {
     Connection con = DBConnection.connection();
 
     // Ergebnisvektor vorbereiten
-    Vector<KKL> result = new Vector<KKL>();
+    Vector<Kontakt> result = new Vector<Kontakt>();
 
     try {
       Statement stmt = con.createStatement();
 
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
+      ResultSet rs = stmt.executeQuery("SELECT id, vorname, nachname, eMail, adresse FROM kkls " //kkl mapper später fertig stellen (kontakt_id und kl:id)
           + " ORDER BY id");
 
       // Für jeden Eintrag im Suchergebnis wird nun ein KKL-Objekt erstellt.
@@ -152,7 +117,7 @@ public class KKLMapper {
     try {
       Statement stmt = con.createStatement();
 
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM accounts "
+      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM kkls "
           + "WHERE owner=" + ownerID + " ORDER BY id");
 
       // Für jeden Eintrag im Suchergebnis wird nun ein KKL-Objekt erstellt.
@@ -210,7 +175,7 @@ public class KKLMapper {
        * Primärschlüsselwert ist.
        */
       ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid "
-          + "FROM accounts ");
+          + "FROM kkls ");
 
       // Wenn wir etwas zurückerhalten, kann dies nur einzeilig sein
       if (rs.next()) {
@@ -223,7 +188,7 @@ public class KKLMapper {
         stmt = con.createStatement();
 
         // Jetzt erst erfolgt die tatsächliche Einfügeoperation
-        stmt.executeUpdate("INSERT INTO accounts (id, owner) " + "VALUES ("
+        stmt.executeUpdate("INSERT INTO kkls (id, owner) " + "VALUES ("
             + a.getId() + "," + a.getOwnerID() + ")");
       }
     }
@@ -255,7 +220,7 @@ public class KKLMapper {
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("UPDATE accounts " + "SET owner=\"" + a.getOwnerID()
+      stmt.executeUpdate("UPDATE kkls " + "SET owner=\"" + a.getOwnerID()
           + "\" " + "WHERE id=" + a.getId());
 
     }
@@ -278,7 +243,7 @@ public class KKLMapper {
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("DELETE FROM accounts " + "WHERE id=" + a.getId());
+      stmt.executeUpdate("DELETE FROM kkls " + "WHERE id=" + a.getId());
 
     }
     catch (SQLException e2) {
@@ -299,7 +264,7 @@ public class KKLMapper {
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("DELETE FROM accounts " + "WHERE owner=" + c.getId());
+      stmt.executeUpdate("DELETE FROM kkls " + "WHERE owner=" + c.getId());
 
     }
     catch (SQLException e2) {
