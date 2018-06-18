@@ -1,4 +1,4 @@
-package de.hdm.iContacts.server;
+package de.hdm.iContacts.server.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -53,7 +53,7 @@ public class KKLMapper {
    * @return DAS <code>KKLMapper</code>-Objekt.
    * @see kklMapper
    */
-  public static KKLMapper userMapper() {
+  public static KKLMapper kklMapper() {
     if (kklMapper == null) {
       kklMapper = new KKLMapper();
     }
@@ -70,7 +70,7 @@ public class KKLMapper {
    *         repräsentieren. Bei evtl. Exceptions wird ein partiell gefüllter
    *         oder ggf. auch leerer Vetor zurückgeliefert.
    */
-  public Vector<Kontakt> findAllKontakteOf(Kontaktliste k) {
+  public Vector<Kontakt> findAllKontakteOf(Kontaktliste kl) {
     Connection con = DBConnection.connection();
 
     // Ergebnisvektor vorbereiten
@@ -79,18 +79,25 @@ public class KKLMapper {
     try {
       Statement stmt = con.createStatement();
 
-      ResultSet rs = stmt.executeQuery("SELECT id, vorname, nachname, eMail, adresse FROM kkls " //kkl mapper später fertig stellen (kontakt_id und kl:id)
-          + " ORDER BY id");
+			ResultSet rs = stmt.executeQuery(
+					"SELECT T_KONTAKT.id, T_KONTAKT.vorname, T_KONTAKT.nachname, T_KONTAKT.eMail, T_KONTAKT.adresse INNER JOIN T_KONTAKT ON T_KKL WHERE T_KKL.ID_KONTAKTLISTE =  "
+							+ kl.getId() // kkl mapper später fertig stellen
+											// (kontakt_id und kl:id)
+							+ " ORDER BY id");
 
       // Für jeden Eintrag im Suchergebnis wird nun ein KKL-Objekt erstellt.
-      while (rs.next()) {
-        KKL a = new KKL();
-        a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
+			 while (rs.next()) { //schleife läuft durch, bis es keinen datensatz mehr gibt, gegenteil zu if
+			        Kontakt a = new Kontakt();
+			        a.setId(rs.getInt("id"));
+			        a.setVorname(rs.getString("vorname"));
+			        a.setNachname(rs.getString("nachname"));
+			        a.setEMail(rs.getString("eMail"));
+			        a.setAdresse(rs.getString("adresse"));
+			        
 
-        // Hinzufügen des neuen Objekts zum Ergebnisvektor
-        result.addElement(a);
-      }
+			        // Hinzufügen des neuen Objekts zum Ergebnisvektor, da mehrere objekte, nicht nur eins wie bei findbykey
+			        result.addElement(a); //vektor wird mit den erzeugten kontakt-okjekten gefüllt
+			      }
     }
     catch (SQLException e2) {
       e2.printStackTrace();
@@ -110,33 +117,9 @@ public class KKLMapper {
    *         betreffenden Kunden repräsentieren. Bei evtl. Exceptions wird ein
    *         partiell gefüllter oder ggf. auch leerer Vetor zurückgeliefert.
    */
-  public Vector<KKL> findByOwner(int ownerID) {
-    Connection con = DBConnection.connection();
-    Vector<KKL> result = new Vector<KKL>();
-
-    try {
-      Statement stmt = con.createStatement();
-
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM kkls "
-          + "WHERE owner=" + ownerID + " ORDER BY id");
-
-      // Für jeden Eintrag im Suchergebnis wird nun ein KKL-Objekt erstellt.
-      while (rs.next()) {
-        KKL a = new KKL();
-        a.setId(rs.getInt("id"));
-        a.setOwnerID(rs.getInt("owner"));
-
-        // Hinzufügen des neuen Objekts zum Ergebnisvektor
-        result.addElement(a);
-      }
-    }
-    catch (SQLException e2) {
-      e2.printStackTrace();
-    }
-
+ 
     // Ergebnisvektor zurückgeben
-    return result;
-  }
+ 
 
   /**
    * Auslesen aller Konten eines Kunden (durch <code>Customer</code>-Objekt
@@ -146,15 +129,7 @@ public class KKLMapper {
    * @param owner Kundenobjekt, dessen Konten wir auslesen möchten.
    * @return alle Konten des Kunden
    */
-  public Vector<KKL> findByOwner(Customer owner) {
-
-    /*
-     * Wir lesen einfach die Kundennummer (Primärschlüssel) des Customer-Objekts
-     * aus und delegieren die weitere Bearbeitung an findByOwner(int ownerID).
-     */
-    return findByOwner(owner.getId());
-  }
-
+ 
   /**
    * Einfügen eines <code>KKL</code>-Objekts in die Datenbank. Dabei wird
    * auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
@@ -164,49 +139,7 @@ public class KKLMapper {
    * @return das bereits übergebene Objekt, jedoch mit ggf. korrigierter
    *         <code>id</code>.
    */
-  public KKL insert(KKL a) {
-    Connection con = DBConnection.connection();
-
-    try {
-      Statement stmt = con.createStatement();
-
-      /*
-       * Zunächst schauen wir nach, welches der momentan höchste
-       * Primärschlüsselwert ist.
-       */
-      ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid "
-          + "FROM kkls ");
-
-      // Wenn wir etwas zurückerhalten, kann dies nur einzeilig sein
-      if (rs.next()) {
-        /*
-         * a erhält den bisher maximalen, nun um 1 inkrementierten
-         * Primärschlüssel.
-         */
-        a.setId(rs.getInt("maxid") + 1);
-
-        stmt = con.createStatement();
-
-        // Jetzt erst erfolgt die tatsächliche Einfügeoperation
-        stmt.executeUpdate("INSERT INTO kkls (id, owner) " + "VALUES ("
-            + a.getId() + "," + a.getOwnerID() + ")");
-      }
-    }
-    catch (SQLException e2) {
-      e2.printStackTrace();
-    }
-
-    /*
-     * Rückgabe, des evtl. korrigierten KKLs.
-     * 
-     * HINWEIS: Da in Java nur Referenzen auf Objekte und keine physischen
-     * Objekte übergeben werden, wäre die Anpassung des KKL-Objekts auch
-     * ohne diese explizite Rückgabe au�erhalb dieser Methode sichtbar. Die
-     * explizite Rückgabe von a ist eher ein Stilmittel, um zu signalisieren,
-     * dass sich das Objekt evtl. im Laufe der Methode verändert hat.
-     */
-    return a;
-  }
+ 
 
   /**
    * Wiederholtes Schreiben eines Objekts in die Datenbank.
@@ -214,42 +147,13 @@ public class KKLMapper {
    * @param a das Objekt, das in die DB geschrieben werden soll
    * @return das als Parameter übergebene Objekt
    */
-  public KKL update(KKL a) {
-    Connection con = DBConnection.connection();
-
-    try {
-      Statement stmt = con.createStatement();
-
-      stmt.executeUpdate("UPDATE kkls " + "SET owner=\"" + a.getOwnerID()
-          + "\" " + "WHERE id=" + a.getId());
-
-    }
-    catch (SQLException e2) {
-      e2.printStackTrace();
-    }
-
-    // Um Analogie zu insert(KKL a) zu wahren, geben wir a zurück
-    return a;
-  }
-
+ 
   /**
    * Löschen der Daten eines <code>KKL</code>-Objekts aus der Datenbank.
    * 
    * @param a das aus der DB zu löschende "Objekt"
    */
-  public void delete(KKL a) {
-    Connection con = DBConnection.connection();
-
-    try {
-      Statement stmt = con.createStatement();
-
-      stmt.executeUpdate("DELETE FROM kkls " + "WHERE id=" + a.getId());
-
-    }
-    catch (SQLException e2) {
-      e2.printStackTrace();
-    }
-  }
+ 
 
   /**
    * Löschen sämtlicher Konten (<code>KKL</code>-Objekte) eines Kunden.
@@ -258,19 +162,33 @@ public class KKLMapper {
    * 
    * @param c das <code>Customer</code>-Objekt, zu dem die Konten gehören
    */
-  public void deleteKKLsOf(Customer c) {
+  public void deleteAllEntriesOf(Kontakt k) {
     Connection con = DBConnection.connection();
 
     try {
       Statement stmt = con.createStatement();
 
-      stmt.executeUpdate("DELETE FROM kkls " + "WHERE owner=" + c.getId());
+      stmt.executeUpdate("DELETE FROM T_KKL " + "WHERE ID_KONTAKT =" + k.getId());
 
     }
     catch (SQLException e2) {
       e2.printStackTrace();
     }
   }
+  
+  public void deleteAllEntriesOf(Kontaktliste kl) {
+	    Connection con = DBConnection.connection();
+
+	    try {
+	      Statement stmt = con.createStatement();
+
+	      stmt.executeUpdate("DELETE FROM T_KKL " + "WHERE ID_KONTAKTLISTE =" + kl.getId());
+
+	    }
+	    catch (SQLException e2) {
+	      e2.printStackTrace();
+	    }
+  }}
 
   /**
    * Auslesen des zugehörigen <code>Customer</code>-Objekts zu einem gegebenen
@@ -279,16 +197,5 @@ public class KKLMapper {
    * @param a das Konto, dessen Inhaber wir auslesen möchten
    * @return ein Objekt, das den Eigentümer des Kontos darstellt
    */
-  public Customer getOwner(KKL a) {
-    /*
-     * Wir bedienen uns hier einfach des CustomerMapper. Diesem geben wir
-     * einfach den in dem s-Objekt enthaltenen Fremdschlüssel für den
-     * Kontoinhaber. Der CustomerMapper lässt uns dann diese ID in ein Objekt
-     * auf.
-     */
-    return CustomerMapper.customerMapper().findByKey(a.getOwnerID());
-  }
-
-}
-
+  
 

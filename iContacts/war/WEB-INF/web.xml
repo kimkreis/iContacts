@@ -8,12 +8,12 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>
-    <servlet-class>de.hdm.iContacts.server.GreetingServiceImpl</servlet-class>
+     <servlet-class>de.hdm.iContacts.server.GreetingServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/icontacts/greet</url-pattern>
+    <url-pattern>/icontacts/greet</url-pattern>  <!-- Adresse von Servlet -->
   </servlet-mapping>
   
   <!-- Default page to serve -->

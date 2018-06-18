@@ -1,4 +1,4 @@
-package de.hdm.iContacts.server;
+package de.hdm.iContacts.server.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -41,7 +41,7 @@ public class DBConnection {
 					 */
 					Class.forName("com.mysql.jdbc.Driver");
 					con = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_icontacts?user=root&password=adminadmin");
-				}
+				} //speicheradresse von db angeben für db zugriff
 
 				// Abfangen verschiedener Exceptions, falls etwas schiefgeht.
 			} catch (SQLException e1) {

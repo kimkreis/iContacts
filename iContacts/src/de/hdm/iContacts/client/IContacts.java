@@ -1,6 +1,9 @@
 package de.hdm.iContacts.client;
 
 import de.hdm.iContacts.shared.FieldVerifier;
+import de.hdm.iContacts.shared.IContactsAdministration;
+import de.hdm.iContacts.shared.IContactsAdministrationAsync;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,7 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class IContacts implements EntryPoint {
+public class IContacts implements EntryPoint { //entrypoint festlegen, Einstiegsklasse der GWT-Anwendung
 	/**
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
@@ -31,19 +34,21 @@ public class IContacts implements EntryPoint {
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
-	private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
-
+	private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);	//proxy-obj. ?
+	private final IContactsAdministrationAsync iContactsAdministration = GWT.create(IContactsAdministration.class);
 	/**
 	 * This is the entry point method.
 	 */
-	public void onModuleLoad() {
+	public void onModuleLoad() { //Startpunkt der GWT-Anwendung, ähnlich wie main, nur für Startklassen
+		
+		//iContactsAdministration.getAllKontakeOf(user, callback); //rpc beispiel
 		final Button sendButton = new Button("Send");
 		final TextBox nameField = new TextBox();
 		nameField.setText("GWT User");
 		final Label errorLabel = new Label();
 
 		// We can add style names to widgets
-		sendButton.addStyleName("sendButton");
+		sendButton.addStyleName("sendButton");      //wieso alles mit final? - ab hier code unklar
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element

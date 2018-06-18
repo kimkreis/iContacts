@@ -1,4 +1,4 @@
-package de.hdm.iContacts.server;
+package de.hdm.iContacts.server.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
