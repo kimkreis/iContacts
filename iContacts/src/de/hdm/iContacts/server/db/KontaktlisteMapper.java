@@ -310,22 +310,5 @@ public class KontaktlisteMapper {
     }
   }
 
-  /**
-   * Auslesen des zugehörigen <code>Customer</code>-Objekts zu einem gegebenen
-   * Konto.
-   * 
-   * @param a das Konto, dessen Inhaber wir auslesen möchten
-   * @return ein Objekt, das den Eigentümer des Kontos darstellt
-   */
-  public User getUser(Kontaktliste a) {
-    /*
-     * Wir bedienen uns hier einfach des CustomerMapper. Diesem geben wir
-     * einfach den in dem s-Objekt enthaltenen Fremdschlüssel für den
-     * Kontoinhaber. Der CustomerMapper lässt uns dann diese ID in ein Objekt
-     * auf.
-     */
-    return UserMapper.userMapper().findBy(a.getUser());
-  }
-
 }
 

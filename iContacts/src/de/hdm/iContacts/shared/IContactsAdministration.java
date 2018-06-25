@@ -39,7 +39,7 @@ import de.hdm.iContacts.shared.bo.User;
  * 
  * @author Thies
  */
-@RemoteServiceRelativePath("bankadministration")
+@RemoteServiceRelativePath("icontacts")
 public interface IContactsAdministration extends RemoteService {
 
   /**
