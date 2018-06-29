@@ -7,14 +7,6 @@ public class Kontakt extends BusinessObject {
 	private String nachname;
 	private String adresse;
 	private String eMail;
-	private User user;
-	
-	public void setUser(User user){
-		this.user= user;
-	}
-	public User getUser(){
-		return user;
-	}
 	
 	public void setVorname (String vorname) {
 		this.vorname = vorname;

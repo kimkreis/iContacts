@@ -1,4 +1,4 @@
-package de.hdm.iContacts.server;
+package de.hdm.iContacts.server.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -117,17 +117,17 @@ public class KontaktlisteMapper {
     try {
       Statement stmt = con.createStatement();
 
-      ResultSet rs = stmt.executeQuery("SELECT id, owner FROM T_KONTAKTLISTE "
+      ResultSet rs = stmt.executeQuery("SELECT id, name FROM T_KONTAKTLISTE " //owner, fehler jdbc
           + " ORDER BY id");
 
       // Für jeden Eintrag im Suchergebnis wird nun ein Kontaktliste-Objekt erstellt.
       while (rs.next()) {
-        Kontaktliste a = new Kontaktliste();
-        a.setId(rs.getInt("id"));
+        Kontaktliste a = new Kontaktliste(); //leeres object, name a, typ von kontaktliste
+        a.setId(rs.getInt("id"));  //von reslut set die daten unter der id spalte holen und mit set in object a speichern
         a.setName(rs.getString("name"));
 
         // Hinzufügen des neuen Objekts zum Ergebnisvektor
-        result.addElement(a);
+        result.addElement(a); //result ist name von vektor (viele a objecte), vorbereitete a objekte in result (vektor), schleife läuft bis tabelle fertig ist
       }
     }
     catch (SQLException e2) {
@@ -135,7 +135,7 @@ public class KontaktlisteMapper {
     }
 
     // Ergebnisvektor zurückgeben
-    return result;
+    return result; //tabelle fertig, mit return wird result vector zurück in impl geschickt
   }
 
   /**
@@ -308,23 +308,6 @@ public class KontaktlisteMapper {
     catch (SQLException e2) {
       e2.printStackTrace();
     }
-  }
-
-  /**
-   * Auslesen des zugehörigen <code>Customer</code>-Objekts zu einem gegebenen
-   * Konto.
-   * 
-   * @param a das Konto, dessen Inhaber wir auslesen möchten
-   * @return ein Objekt, das den Eigentümer des Kontos darstellt
-   */
-  public User getUser(Kontaktliste a) {
-    /*
-     * Wir bedienen uns hier einfach des CustomerMapper. Diesem geben wir
-     * einfach den in dem s-Objekt enthaltenen Fremdschlüssel für den
-     * Kontoinhaber. Der CustomerMapper lässt uns dann diese ID in ein Objekt
-     * auf.
-     */
-    return UserMapper.userMapper().findBy(a.getUser());
   }
 
 }

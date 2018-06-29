@@ -1,4 +1,4 @@
-package de.hdm.iContacts.server;
+package de.hdm.iContacts.server.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.Vector;
 
 import de.hdm.iContacts.shared.bo.Kontakt;
+import de.hdm.iContacts.shared.bo.User;
 
 /**
  * Mapper-Klasse, die <code>Kontakt</code>-Objekte auf eine relationale
@@ -274,6 +275,40 @@ public class KontaktMapper {
    * 
    * @param c das <code>Customer</code>-Objekt, zu dem die Konten gehören
    */
+  public Vector<Kontakt> getAllKontakteOf(User user) {
+	  Connection con = DBConnection.connection(); //wieder auf db verbindung zugreifen, in jeder methode neu
+
+	    // Ergebnisvektor vorbereiten
+	    Vector<Kontakt> result = new Vector<Kontakt>(); //leerer vektor
+
+	    try {
+	      Statement stmt = con.createStatement();
+
+	      ResultSet rs = stmt.executeQuery("SELECT * FROM T_KONTAKT WHERE id_user = " + user.getId() + " ORDER BY id"); //kein where notwendig
+	    		  
+	      // Für jeden Eintrag im Suchergebnis wird nun ein Kontakt-Objekt erstellt.
+	      while (rs.next()) { //schleife läuft durch, bis es keinen datensatz mehr gibt, gegenteil zu if
+	        Kontakt a = new Kontakt();
+	        a.setId(rs.getInt("id"));
+	        a.setVorname(rs.getString("vorname"));
+	        a.setNachname(rs.getString("nachname"));
+	        a.setEMail(rs.getString("eMail"));
+	        a.setAdresse(rs.getString("adresse"));
+	        
+
+	        // Hinzufügen des neuen Objekts zum Ergebnisvektor, da mehrere objekte, nicht nur eins wie bei findbykey
+	        result.addElement(a); //vektor wird mit den erzeugten kontakt-okjekten gefüllt
+	      }
+	    }
+	    catch (SQLException e2) {
+	      e2.printStackTrace();
+	    }
+
+	    // Ergebnisvektor zurückgeben
+	    return result;
+	  }
+
+  
   
 }
 

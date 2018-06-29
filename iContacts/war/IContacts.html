@@ -21,9 +21,9 @@
     <!--                                           -->
     <!-- This script loads your compiled module.   -->
     <!-- If you add any GWT meta tags, they must   -->
-    <!-- be added before this line.                -->
+    <!-- be added before this line.      festgelegt, was kompiliert wird          -->
     <!--                                           -->
-    <script type="text/javascript" language="javascript" src="icontacts/icontacts.nocache.js"></script>
+    <script type="text/javascript" language="javascript" src="icontacts/icontacts.nocache.js"></script> 
   </head>
 
   <!--                                           -->
@@ -41,19 +41,20 @@
       </div>
     </noscript>
 
-    <h1>Web Application Starter Project</h1>
-
-    <table align="center">
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Please enter your name:</td>        
-      </tr>
-      <tr>
-        <td id="nameFieldContainer"></td>
-        <td id="sendButtonContainer"></td>
-      </tr>
-      <tr>
-        <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
-      </tr>
-    </table>
+    <div id="MainFrame">
+        <div id="Header">
+            <h1>iContacts</h1>
+        </div>
+        <div id="Subheader"></div>
+        <table class="table">
+            <tr>
+                <td><div id="Navbar"></div></td>
+                <td><div id="Content"></div></td>
+            </tr>
+        </table>
+        <div id="Subnav"></div>
+        <div id="Footer">© Kim Kreis | Hochschule der Medien Stuttgart | Kontaktverwaltung | IT-Projekt</div>
+    </div>
+ 
   </body>
 </html>
