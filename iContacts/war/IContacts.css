@@ -5,7 +5,7 @@ div#MainFrame {
 	height: auto;
 	border: 0.0px solid black;
 	margin: auto;
-	background-image: linear-gradient(to bottom, #999999, #FFFFFF);
+	background-image: linear-gradient(to bottom, #111111, #AAAAAA);
 }
 
 div#ReportsMainFrame {
@@ -19,7 +19,7 @@ div#ReportsMainFrame {
 div#Header {
 	height: 80.0px;
 	margin-top: 2.0px;
-	background: #999999;
+	background: #111111;
 	border-color:  black;
 	border-width: 0.0px;
 	border-style: solid;
@@ -299,7 +299,7 @@ div#ReportsFooter {
 }
 
 .gwt-Red-Button {
-	background: #ff0033;
+	background: #aa0033;
 	background-image: -webkit-linear-gradient(top, #ffffff, #ff0033);
 	background-image: -moz-linear-gradient(top, #ffffff, #ff0033);
 	background-image: -ms-linear-gradient(top, #ffffff, #ff0033);
