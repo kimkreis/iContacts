@@ -54,3 +54,5 @@ war/WEB-INF/classes/
 /.gwt
 /test-classes/
 war/icontacts
+
+.DS_Store
