@@ -86,8 +86,8 @@ public interface IContactsAdministration extends RemoteService {
   public Vector<Kontaktliste> getAllKontaktlisten ()
 		  throws IllegalArgumentException;
   
-  public Vector<Kontakt> getAllKontakeOf (User user)
-		  throws IllegalArgumentException;
+  public Vector<Kontakt> getAllKontakeOf (User user) // wir schicken ein user objekt an die impl, impl schickt es zurück aber asynchron, vector return object
+		  throws IllegalArgumentException; //fehlerbehandlung
   
   public Vector<Kontaktliste> getAllKontaktlistenOf (User user)
 		  throws IllegalArgumentException;

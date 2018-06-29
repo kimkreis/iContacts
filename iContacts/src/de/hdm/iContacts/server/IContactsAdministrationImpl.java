@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import de.hdm.iContacts.server.db.KKLMapper;
 import de.hdm.iContacts.server.db.KontaktMapper;
 import de.hdm.iContacts.server.db.KontaktlisteMapper;
 import de.hdm.iContacts.server.db.UserMapper;
@@ -15,8 +14,7 @@ import de.hdm.iContacts.shared.bo.User;
 
 public class IContactsAdministrationImpl extends RemoteServiceServlet implements IContactsAdministration {
 
-
-	private KKLMapper kklMapper = null; // angelegt und importiert kkl mapper etc
+	private static final long serialVersionUID = 6437184998312943498L;
 	private KontaktMapper kMapper = null; // auch gleich null wie bank?
 	private KontaktlisteMapper klMapper = null;
 	private UserMapper userMapper = null;
@@ -24,8 +22,6 @@ public class IContactsAdministrationImpl extends RemoteServiceServlet implements
 	@Override
 	public void init() throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		
-	    this.kklMapper = KKLMapper.kklMapper(); 
 	    this.kMapper = KontaktMapper.kontaktMapper();
 	    this.klMapper = KontaktlisteMapper.kontaktlisteMapper();
 	    this.userMapper = UserMapper.userMapper();
@@ -120,7 +116,7 @@ public class IContactsAdministrationImpl extends RemoteServiceServlet implements
 	public void delete(Kontakt k) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		 
-		kklMapper.deleteAllEntriesOf(k);
+		//kklMapper.deleteAllEntriesOf(k);
 		this.kMapper.delete(k);
 		 
 	}
@@ -128,7 +124,7 @@ public class IContactsAdministrationImpl extends RemoteServiceServlet implements
 	@Override
 	public void delete(Kontaktliste kl) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		kklMapper.deleteAllEntriesOf(kl);
+		//kklMapper.deleteAllEntriesOf(kl);
 		this.klMapper.delete(kl);
 	
 	}
@@ -136,14 +132,15 @@ public class IContactsAdministrationImpl extends RemoteServiceServlet implements
 	@Override //überschriebene, nicht überladene Methode, vererbung, annotation
 	public Vector<Kontakt> getAllKontakte() throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		return this.kMapper.findAll();
+		Vector<Kontakt> result = this.kMapper.findAll();
+		return result;
 		//return null;
 	}
 
 	@Override
 	public Vector<Kontaktliste> getAllKontaktlisten() throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		return this.klMapper.findAll();
+		return this.klMapper.findAll(); //rpc return, schickt den kommenden vektor zurück ins client, aufruf und antwort
 		//return null;
 	}
 
@@ -164,8 +161,8 @@ public class IContactsAdministrationImpl extends RemoteServiceServlet implements
 	@Override
 	public Vector<Kontakt> getAllKontakteOf(Kontaktliste kl) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		Vector <Kontakt> k = kklMapper.findAllKontakteOf(kl);
-		return k;
+	//	Vector <Kontakt> k = kklMapper.findAllKontakteOf(kl);
+		return null;
 		//return null;
 	}
 	

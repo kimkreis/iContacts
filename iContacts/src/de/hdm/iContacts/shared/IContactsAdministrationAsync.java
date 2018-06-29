@@ -8,7 +8,7 @@ import de.hdm.iContacts.shared.bo.Kontakt;
 import de.hdm.iContacts.shared.bo.Kontaktliste;
 import de.hdm.iContacts.shared.bo.User;
 
-public interface IContactsAdministrationAsync {
+public interface IContactsAdministrationAsync { 
 
 	void delete(User user, AsyncCallback<Void> callback); //löschen immer void
 

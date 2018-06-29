@@ -1,5 +1,7 @@
 package de.hdm.iContacts.client;
 
+import de.hdm.iContacts.client.navbar.ShowContactlistsNav;
+import de.hdm.iContacts.client.navbar.ShowContactsNav;
 import de.hdm.iContacts.shared.FieldVerifier;
 import de.hdm.iContacts.shared.IContactsAdministration;
 import de.hdm.iContacts.shared.IContactsAdministrationAsync;
@@ -34,59 +36,53 @@ public class IContacts implements EntryPoint { //entrypoint festlegen, Einstiegs
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
-		//proxy-obj. erzeugen
-	private final IContactsAdministrationAsync iContactsAdministration = GWT.create(IContactsAdministration.class);
+		
+	
+	private VerticalPanel navbar;
+	private VerticalPanel content;
+	private Label lbl;
+	private Label lbl2;
+	private Button logoutButton;
+	private ShowContactsNav showContactsNav;
+	private ShowContactlistsNav showContactlistsNav;
+
+	//private final IContactsAdministrationAsync iContactsAdministration = GWT.create(IContactsAdministration.class); //proxy-obj. erzeugen
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() { //Startpunkt der GWT-Anwendung, ähnlich wie main, nur für Startklassen
 		
-		//iContactsAdministration.getAllKontakeOf(user, callback); //rpc beispiel
-		final Button sendButton = new Button("Save");
-		final TextBox nameField = new TextBox();
-		nameField.setText("GWT User");
-		final Label errorLabel = new Label();
-
-		// We can add style names to widgets
-		sendButton.addStyleName("sendButton");      //wieso alles mit final? - ab hier code unklar
-
-		// Add the nameField and sendButton to the RootPanel
-		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(nameField);
-		RootPanel.get("sendButtonContainer").add(sendButton);
-		RootPanel.get("errorLabelContainer").add(errorLabel);
-
-		// Focus the cursor on the name field when the app loads
-		nameField.setFocus(true);
-		nameField.selectAll();
-
-		// Create the popup dialog box
-		final DialogBox dialogBox = new DialogBox();
-		dialogBox.setText("Remote Procedure Call");
-		dialogBox.setAnimationEnabled(true);
-		final Button closeButton = new Button("Close");
-		// We can set the id of a widget by accessing its Element
-		closeButton.getElement().setId("closeButton");
-		final Label textToServerLabel = new Label();
-		final HTML serverResponseLabel = new HTML();
-		VerticalPanel dialogVPanel = new VerticalPanel();
-		dialogVPanel.addStyleName("dialogVPanel");
-		dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-		dialogVPanel.add(textToServerLabel);
-		dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-		dialogVPanel.add(serverResponseLabel);
-		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-		dialogVPanel.add(closeButton);
-		dialogBox.setWidget(dialogVPanel);
-
-		// Add a handler to close the DialogBox
-		closeButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				dialogBox.hide();
-				sendButton.setEnabled(true);
-				sendButton.setFocus(true);
-			}
-		});
+		navbar = new VerticalPanel();
+		showContactsNav = new ShowContactsNav();
+		showContactlistsNav = new ShowContactlistsNav();
+		 
+		logoutButton = new Button("Logout"); //button erstellen
+		
+		//logoutButton.addClickHandler(new ClickHandler() { //senke
+			//public void onClick (ClickEvent event){ //quelle
+				//logout(); //logout code
+			//}
+		//});
+		        logoutButton.setStyleName("gwt-Red-Button"); // in css definiert
+		        logoutButton.addClickHandler(new LogoutClickHandler()); //clickhandler hinzufügen, ausloggen würde mit google login gehen
+		RootPanel.get("Navbar").add(logoutButton); //links
+		content = new VerticalPanel();
+		        lbl = new Label("Willkommen bei iContacts");
+		        lbl.setStyleName("headline");
+		        lbl2 = new Label("Hier können Sie ihe Kontakte verwalten");
+		        //Image img2 = new Image("../images/love.png");
+		        //img2.setStyleName("picture");
+		        content.add(lbl);
+		        content.add(lbl2);
+		        //content.add(img2);
+		 
+		RootPanel.get("Content").add(content);
 
 	}
+	class LogoutClickHandler implements ClickHandler { //klasse, die clickhandler implementiert; anonyme nur wenn es einmal vorkommt, fast nie
+		public void onClick(ClickEvent event) {
+			//String signIn = loginInfo.getLogoutUrl().toString();
+			//Window.Location.assign(signIn);
+		}
+}
 }
