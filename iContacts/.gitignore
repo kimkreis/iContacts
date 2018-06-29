@@ -52,4 +52,5 @@ war/WEB-INF/classes/
 .svn/
 /.settings
 /.gwt
-/war/icontacts
+/test-classes/
+war/icontacts
