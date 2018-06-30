@@ -670,7 +670,7 @@ div#ReportsFooter {
 }
 
 .flexTableHeader {
-	background-color: black;
+	background-color: blue; 
 	color: white;
 	font-style: heavy-bold;
 	text-align: center;

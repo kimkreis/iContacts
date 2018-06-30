@@ -122,10 +122,10 @@ public class IContactsAdministrationImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void delete(Kontaktliste kl) throws IllegalArgumentException {
+	public void delete(Kontaktliste k) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		//kklMapper.deleteAllEntriesOf(kl);
-		this.klMapper.delete(kl);
+		this.klMapper.delete(k);
 	
 	}
 

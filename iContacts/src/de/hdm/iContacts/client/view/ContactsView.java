@@ -20,7 +20,7 @@ import de.hdm.iContacts.shared.bo.Kontakt;
 public class ContactsView extends VerticalPanel{
 
 	 
-	    private IContactsAdministrationAsync iContactsAdministration = GWT.create(IContactsAdministration.class);
+	    private IContactsAdministrationAsync iContactsAdministration = GWT.create(IContactsAdministration.class); //Tabellen, die daten von der db brauchen
 	   
 	
 	    private String userEmail;

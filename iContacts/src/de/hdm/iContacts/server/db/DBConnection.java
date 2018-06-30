@@ -61,7 +61,7 @@ import com.google.appengine.api.utils.SystemProperty;
 public class DBConnection { //verbindung zur datenbank
 
     
-    private static Connection con = null;
+    private static Connection con = null; //wieso resultSet nicht = null und statement
 
     
     private static String googleUrl = "jdbc:google:mysql://itprojektss18:europe-west:itprojektinstanz/itprojektdb?user=root&password=1234";
@@ -86,7 +86,7 @@ public class DBConnection { //verbindung zur datenbank
                     url = localUrl;
                 }
                 
-                con = DriverManager.getConnection(url);
+                con = DriverManager.getConnection(url); //punkt aufruf erklären
             } catch (Exception e) {
                 con = null;
                 e.printStackTrace();
