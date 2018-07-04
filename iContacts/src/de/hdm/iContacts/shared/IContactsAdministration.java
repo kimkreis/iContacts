@@ -50,7 +50,7 @@ public interface IContactsAdministration extends RemoteService {
    * 
    * @throws IllegalArgumentException
    */
-  public void init() throws IllegalArgumentException;
+  public void init() throws IllegalArgumentException; //brauch ich nicht
 
   /**
    * Einen Kunden anlegen.

@@ -76,17 +76,17 @@ public class DBConnection { //verbindung zur datenbank
         if (con == null) {
             String url = null;
             try {
-                if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Production) {
+                if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Production) { //überprüft ob es auf app engine läuft
                     
-                    Class.forName("com.mysql.jdbc.GoogleDriver");
+                    Class.forName("com.mysql.jdbc.GoogleDriver"); //google treiber
                     url = googleUrl;
                 } else {
                    
-                    Class.forName("com.mysql.jdbc.Driver");
+                    Class.forName("com.mysql.jdbc.Driver"); //lokaler driver
                     url = localUrl;
                 }
                 
-                con = DriverManager.getConnection(url); //punkt aufruf erklären
+                con = DriverManager.getConnection(url); //punkt aufruf erklären, klasse
             } catch (Exception e) {
                 con = null;
                 e.printStackTrace();

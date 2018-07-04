@@ -23,7 +23,7 @@ public class ContactsListView {
 	    public ContactsListView() {
 	 
 	        // Content wird geloescht
-	        RootPanel.get("Content").clear();
+	        RootPanel.get("Content").clear(); // alles löschen
 	        RootPanel.get("Subnav").clear();
 	        createContactsListTable();
 	    }

@@ -12,7 +12,7 @@ public interface IContactsAdministrationAsync {
 
 	void delete(User user, AsyncCallback<Void> callback); //löschen immer void
 
-	void delete(Kontakt k, AsyncCallback<Void> callback);
+	void delete(Kontakt k, AsyncCallback<Void> callback); //async call back passiert im hintegrund, art nummer, proxy ist platzhalter
 
 	void delete(Kontaktliste k, AsyncCallback<Void> callback);
 

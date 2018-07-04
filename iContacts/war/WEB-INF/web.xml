@@ -8,7 +8,7 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>icontacts</servlet-name>
-     <servlet-class>de.hdm.iContacts.server.IContactsAdministrationImpl</servlet-class>
+     <servlet-class>de.hdm.iContacts.server.IContactsAdministrationImpl</servlet-class>  <!-- Entscheidet welches Servlet -->
   </servlet>
   
   <servlet-mapping>

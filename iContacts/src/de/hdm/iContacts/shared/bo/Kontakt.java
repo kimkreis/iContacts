@@ -1,6 +1,6 @@
 package de.hdm.iContacts.shared.bo;
 
-public class Kontakt extends BusinessObject {
+public class Kontakt extends BusinessObject { 
 	
 	 // alle variablen ausser id
 	private String vorname;

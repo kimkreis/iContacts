@@ -24,7 +24,7 @@ public class IContactsAdministrationImpl extends RemoteServiceServlet implements
 		// TODO Auto-generated method stub
 	    this.kMapper = KontaktMapper.kontaktMapper();
 	    this.klMapper = KontaktlisteMapper.kontaktlisteMapper();
-	    this.userMapper = UserMapper.userMapper();
+	    this.userMapper = UserMapper.userMapper(); 
 	
 	}
 	 
@@ -33,7 +33,7 @@ public class IContactsAdministrationImpl extends RemoteServiceServlet implements
 	@Override
 	public User save(User user) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		if (userMapper.findBy(user) == null) {
+		if (userMapper.findBy(user) == null) { //userMapper. mit punkt operator methoden aufrufen, meist haben methoden einen rückgabewert
 			userMapper.insert(user); // usermapper such eintrag von user
 		} else {
 			userMapper.update(user);

@@ -1,5 +1,7 @@
 package de.hdm.iContacts.client;
 
+import de.hdm.iContacts.client.form.ContactForm;
+import de.hdm.iContacts.client.navbar.ShowContactFormNav;
 import de.hdm.iContacts.client.navbar.ShowContactlistsNav;
 import de.hdm.iContacts.client.navbar.ShowContactsNav;
 import de.hdm.iContacts.shared.FieldVerifier;
@@ -45,6 +47,7 @@ public class IContacts implements EntryPoint { //entrypoint festlegen, Einstiegs
 	private Button logoutButton;
 	private ShowContactsNav showContactsNav;
 	private ShowContactlistsNav showContactlistsNav;
+	private ShowContactFormNav showContactFormNav;
 
 	//private final IContactsAdministrationAsync iContactsAdministration = GWT.create(IContactsAdministration.class); //proxy-obj. erzeugen
 	/**
@@ -55,6 +58,7 @@ public class IContacts implements EntryPoint { //entrypoint festlegen, Einstiegs
 		navbar = new VerticalPanel();
 		showContactsNav = new ShowContactsNav();
 		showContactlistsNav = new ShowContactlistsNav();
+		showContactFormNav = new ShowContactFormNav();
 		 
 		logoutButton = new Button("Logout"); //button erstellen
 		
