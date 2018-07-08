@@ -75,7 +75,7 @@ public class DBConnection { //verbindung zur datenbank
         
         if (con == null) {
             String url = null;
-            try {
+            try { //versuch, wenn e gut läuf, gehts nicht zu catch
                 if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Production) { //überprüft ob es auf app engine läuft
                     
                     Class.forName("com.mysql.jdbc.GoogleDriver"); //google treiber
@@ -87,7 +87,7 @@ public class DBConnection { //verbindung zur datenbank
                 }
                 
                 con = DriverManager.getConnection(url); //punkt aufruf erklären, klasse
-            } catch (Exception e) {
+            } catch (Exception e) { //zb passort falsch etc, sqlserver nicht bereit/ gestartet
                 con = null;
                 e.printStackTrace();
                 throw new RuntimeException(e.getMessage());
@@ -97,7 +97,7 @@ public class DBConnection { //verbindung zur datenbank
         
 
         
-        return con;
+        return con; //con object zurückscicke, mpper klasse nimmt con object
     }
 
 }

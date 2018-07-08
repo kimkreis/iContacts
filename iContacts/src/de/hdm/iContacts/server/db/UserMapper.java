@@ -87,11 +87,11 @@ public class UserMapper {
         if (rs.next()) { //.next, erste zeile von resultset
           // Ergebnis-Tupel in Objekt umwandeln
           User a = new User();
-          a.setId(rs.getInt("id"));
+          a.setId(rs.getInt("id")); //id spalte , reihe auslesen, objekte holen, id ojekt...
           a.setVorname(rs.getString("vorname"));
           a.setNachname(rs.getString("nachname"));
           a.setEMail(rs.getString("eMail"));
-         
+         //erst danach in a speichern
           return a;
           
         }

@@ -14,7 +14,7 @@ public class ShowContactlistsNav extends VerticalPanel {
 	private Button showContactlistsButton; // "
 
 
-	public ShowContactlistsNav() {
+	public ShowContactlistsNav() { //konstruktor
 		navbar = new VerticalPanel(); //wieso kein datentyp
 		showContactlistsButton = new Button("Kontaktlisten");//hier auch
 		showContactlistsButton.setStyleName("menubutton");

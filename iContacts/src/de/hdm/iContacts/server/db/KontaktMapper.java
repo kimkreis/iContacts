@@ -275,7 +275,7 @@ public class KontaktMapper {
    * 
    * @param c das <code>Customer</code>-Objekt, zu dem die Konten gehören
    */
-  public Vector<Kontakt> getAllKontakteOf(User user) {
+  public Vector<Kontakt> getAllKontakteOf(User user) { //von kkl mapper, methode findAllKontakteOF (Kontaktliste kl) umschreiben
 	  Connection con = DBConnection.connection(); //wieder auf db verbindung zugreifen, in jeder methode neu
 
 	    // Ergebnisvektor vorbereiten
